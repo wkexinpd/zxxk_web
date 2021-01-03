@@ -6,15 +6,15 @@
         <h3 class="title">系统登录</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="userId">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
+          ref="userId"
+          v-model="loginForm.userId"
           placeholder="请输入用户名"
-          name="username"
+          name="userId"
           type="text"
           tabindex="1"
           autocomplete="on"
@@ -44,7 +44,6 @@
           </span>
         </el-form-item>
       </el-tooltip>
-      <el-button class="registerButton" @click="sendRegister">没有账号，点击注册</el-button>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
@@ -52,7 +51,7 @@
 </template>
 
 <script>
-  const validateUsername = (rule, value, callback) => {
+  const validateUserId = (rule, value, callback) => {
     if (!value) {
       callback(new Error('请输入用户名'))
     } else {
@@ -71,11 +70,11 @@
     data() {
       return {
         loginForm: {
-          username: '',
+          userId: '',
           password: ''
         },
         loginRules: {
-          username: [{ trigger: 'blur', validator: !this.disabled&&validateUsername }],
+          userId: [{ trigger: 'blur', validator: !this.disabled&&validateUserId }],
           password: [{ trigger: 'blur', validator: !this.disabled&&validatePassword }]
         },
         passwordType: 'password',
@@ -100,15 +99,15 @@
       disabled:{
         handler: function () {
           this.loginRules = {
-            username: [{ trigger: 'blur', validator: !this.disabled&&validateUsername }],
+            userId: [{ trigger: 'blur', validator: !this.disabled&&validateUserId }],
             password: [{ trigger: 'blur', validator: !this.disabled&&validatePassword }]
           }
         }
       }
     },
     mounted() {
-      if (this.loginForm.username === '') {
-        this.$refs.username.focus()
+      if (this.loginForm.userId === '') {
+        this.$refs.userId.focus()
       } else if (this.loginForm.password === '') {
         this.$refs.password.focus()
       }
@@ -154,9 +153,6 @@
           }
           return acc
         }, {})
-      },
-      sendRegister(){
-        this.$router.push(`/register?redirect=${this.$route.fullPath}`)
       }
     }
   }

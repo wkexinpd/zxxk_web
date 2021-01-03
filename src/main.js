@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import axios from 'axios'
 
 import Cookies from 'js-cookie'
 
@@ -33,6 +34,14 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
+
+//自定义
+var instance = axios.create({
+  timeout:5000,
+  baseURL :'http://localhost:4321',
+  headers:{"Content-Type" : "multipart/form-data;boundary ="+ new Date().getTime()}
+});
+Vue.prototype.$instance=instance;
 
 new Vue({
   el: '#app',

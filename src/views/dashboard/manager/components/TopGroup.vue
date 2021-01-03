@@ -1,41 +1,28 @@
 <template>
   <el-row :gutter="40" class="panel-group">
-    <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="card-panel-col">
+    <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('person')">
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            客户人数
+            老师人数
           </div>
-          <div class="card-panel-num">10000</div>
+          <div class="card-panel-num">{{countTeacher}}</div>
         </div>
       </div>
     </el-col>
-    <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="card-panel-col">
+    <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('goods')">
         <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="shopping" class-name="card-panel-icon" />
+          <i class="card-panel-icon el-icon-s-management"/>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            商品数量
+            课程数量
           </div>
-          <div class="card-panel-num">10000</div>
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('order')">
-        <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="money" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            订单数量
-          </div>
-          <div class="card-panel-num">10000</div>
+          <div class="card-panel-num">{{countClass}}</div>
         </div>
       </div>
     </el-col>
@@ -43,12 +30,30 @@
 </template>
 
 <script>
+  import {countIndex} from '@/api/user'
   export default {
     name: "TopGroup",
+    data(){
+      return {
+        countTeacher:0,
+        countClass:0
+      }
+    },
+    created() {
+      this.countIndex()
+    },
     methods: {
       handleSetLineChartData(type){
         this.$emit('handleSetLineChartData', type)
+      },
+      countIndex(){
+        countIndex().then((res)=>{
+          // console.log(res);
+          this.countTeacher = res.data.countTeacher
+          this.countClass = res.data.countClass
+        })
       }
+
     }
   }
 </script>

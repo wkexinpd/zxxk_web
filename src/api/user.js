@@ -2,53 +2,38 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/shop-impl-member/login',
+    url:'/user/login',
     method: 'post',
     data
   })
 }
 
-// export function getInfo() {
-//   return request({
-//     url: '/shop-impl-member/web/index',
-//     method: 'get'
-//   })
-// }
-
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/shop-impl-member/web/index',
-    method: 'get',
-    params: {token}
+    url: '/user/userInfo',
+    method: 'get'
   })
 }
 
-export function sendSms(phone) {
+
+export function logout() {
   return request({
-    url: `/shop-impl-member/sendSms?phone=${phone}`,
+    url: '/user/loginOut',
     method: 'post'
   })
 }
 
-export function logout(token) {
+export function updatePassword(data) {
   return request({
-    url: '/shop-impl-member/logout',
-    method: 'post',
-    params: {token}
-  })
-}
-
-export function registerSendSms(phone) {
-  return request({
-    url: `/shop-impl-member/registerSendSms?phone=${phone}`,
-    method: 'post'
-  })
-}
-
-export function register(data) {
-  return request({
-    url: '/shop-impl-member/Register',
+    url: '/user/updatePassword',
     method: 'post',
     data
+  })
+}
+
+export function countIndex() {
+  return request({
+    url:'/user/index',
+    method: 'post'
   })
 }

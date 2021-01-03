@@ -1,83 +1,84 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
-import {use} from "element-ui/src/locale";
+import store from "@/store";
 
 const state = {
-  token: getToken(),
+  userId: '',
   username: '',
-  id: 0,
-  phone: '',
-  type: '',
+  grade: '',
+  dept: '',
+  sclass: '',
   typeId: 0,
-  sex: '男',
   role: [],
-  createTime: '',
-  // updateTime: ''
+  startyear: '',
+  endyear: '',
+  phone:'',
+  email: ''
 }
 
 const mutations = {
-  SET_TOKEN: (state, token) => {
-    state.token = token
+  SET_USERID: (state, userId) => {
+    state.userId = userId
   },
   SET_USERNAME: (state, username) => {
     state.username = username
   },
-  SET_ID: (state, id) => {
-    state.id = id
+  SET_GRADE: (state, grade) => {
+    state.grade = grade
   },
-  SET_PHONE: (state, phone) => {
-    state.phone = phone
+  SET_DEPT: (state, dept) => {
+    state.dept = dept
   },
-  SET_TYPE: (state, type) => {
-    state.type = type
+  SET_SCLASS: (state, sclass) => {
+    state.sclass = sclass
   },
   SET_TYPEID: (state, typeId) => {
     state.typeId = typeId
   },
-  SET_SEX: (state, sex) => {
-    state.sex = sex
-  },
   SET_ROLE: (state,role) => {
     state.role = role
   },
-  SET_CREATETIME: (state,createTime)=>{
-    state.createTime = createTime
+  SET_STARTYEAR: (state,startyear)=>{
+    state.startyear = startyear
   },
-  // SET_UPDATETIME: (state,updateTime) => {
-  //   state.updateTime = updateTime
-  // }
+  SET_ENDYEAR: (state,endyear)=>{
+    state.endyear = endyear
+  },
+  SET_PHONE: (state,phone)=>{
+    state.phone = phone
+  },
+  SET_EMAIL: (state,email) => {
+    state.email = email
+  }
 }
 
 const actions = {
-  // user login
   login({ commit }, userInfo) {
     // console.log(userInfo);
-    const { username, password, phones, identify } = userInfo
-    let type,code,phone
-    if(username!==""){
-      type = 1
-      phone = username.trim()
-      code = password
-    }else if(phones!==""){
-      type = 0
-      phone = phones.trim()
-      code = identify
-    }
+    const { userId, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ phone: phone, code: code, type:type, loginType: "PC" }).then(response => {
-        // console.log(response.data.token);
+      login({ userId, password}).then(response => {
+        console.log(response);
         const { data } = response
-        // const {username, id, phone, type, typeId, sex} = data.user
-        // sessionStorage.setItem('typeId',JSON.parse(typeId))
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        // commit('SET_USERNAME',username)
-        // commit('SET_ID',id)
-        // commit('SET_PHONE',phone)
-        // commit('SET_TYPE',type)
-        // commit('SET_TYPEID',typeId)
-        // commit('SET_SEX',sex)
+        const {id,username, userId, grade, dept, sclass, type, startyear, endyear,phone,email} = data
+        sessionStorage.setItem("id",JSON.stringify(id))
+        sessionStorage.setItem("userId",JSON.stringify(userId))
+        sessionStorage.setItem("username",JSON.stringify(username))
+        commit('SET_USERID',userId)
+        commit('SET_USERNAME',username)
+        commit('SET_GRADE',grade)
+        commit('SET_DEPT',dept)
+        commit('SET_SCLASS',sclass)
+        commit('SET_TYPEID',type)
+        commit('SET_STARTYEAR',startyear)
+        commit('SET_ENDYEAR',endyear)
+        // commit('SET_ROLE', [type])
+        commit('SET_PHONE',phone)
+        commit('SET_EMAIL',email)
+        // console.log(response,store.getters.role,sessionStorage.getItem("role"));
+        sessionStorage.setItem("role",JSON.stringify(type))
+        sessionStorage.setItem("phone",JSON.stringify(phone))
+        sessionStorage.setItem("email",JSON.stringify(email))
         resolve()
       }).catch(error => {
         console.log(error);
@@ -86,91 +87,29 @@ const actions = {
     })
   },
 
-  // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      // setTimeout(()=>{
-      //   const arr = [
-      //     sessionStorage.getItem('typeId')
-      //   ]
-      //   commit('SET_ROLE', arr)
-      //   resolve(arr)
-      // },100)
-      getInfo(state.token).then(response => {
-        const {data} = response
-        if(!data){
-          reject('验证失败，请再次登录')
-        }
-        const {username, id, phone, type, typeId, sex, createTime} = data.user
-        // console.log(data);
-        sessionStorage.setItem('typeId',JSON.stringify(typeId))
-        const arr = [JSON.parse(sessionStorage.getItem('typeId'))]
-        // console.log(arr);
-        commit('SET_USERNAME',username)
-        commit('SET_ID',id)
-        commit('SET_PHONE',phone)
-        commit('SET_TYPE',type)
-        commit('SET_TYPEID',typeId)
-        commit('SET_SEX',sex)
-        commit('SET_CREATETIME',createTime)
-        // commit('SET_UPDATETIME',updateTime)
-        commit('SET_ROLE', arr)
-        resolve(arr)
-      }).catch(error=>{
-        console.log(error);
-        reject(error)
-      })
+      setTimeout(()=>{
+        const type =JSON.parse(sessionStorage.getItem("role"))
+        commit('SET_ROLE', [type])
+        resolve([type])
+      },500)
     })
   },
 
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
+      logout().then(() => {
+        sessionStorage.clear();
         commit('SET_ROLE', [])
-        removeToken()
         resetRouter()
-
-        // reset visited views and cached views
-        // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
-
         resolve()
       }).catch(error => {
         reject(error)
       })
     })
-  },
-
-  // remove token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      commit('SET_TOKEN', '')
-      commit('SET_ROLES', [])
-      removeToken()
-      resolve()
-    })
-  },
-
-  // dynamically modify permissions
-  async changeRoles({ commit, dispatch }, role) {
-    const token = role + '-token'
-
-    commit('SET_TOKEN', token)
-    setToken(token)
-
-    const { roles } = await dispatch('getInfo')
-
-    resetRouter()
-
-    // generate accessible routes map based on roles
-    const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
-    // dynamically add accessible routes
-    router.addRoutes(accessRoutes)
-
-    // reset visited views and cached views
-    dispatch('tagsView/delAllViews', null, { root: true })
   }
 }
 

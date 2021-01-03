@@ -1,28 +1,24 @@
 import request from '@/utils/request'
 
-export function getPersonList(data,page,limit) {
+export function getPersonList(classId) {
   return request({
-    url: `/shop-impl-member/getAllUser?page=${page}&limit=${limit}`,
+    url: `/teacher/findStudent?classId=${classId}`,
+    method: 'get'
+  })
+}
+
+export function deleteSelect(data) {
+  return request({
+    url:'/selectClass/deleteSelect',
     method: 'post',
     data
   })
 }
 
-export function updatePerson(userMessageDTO){
-  // console.log(data);
-  // let userMessageDTO = data
+export function selectOne(data) {
   return request({
-    url: `/shop-impl-member/updateUser`,
+    url:'/selectClass/selectClass',
     method: 'post',
-    data:userMessageDTO
-    // userMessageDTO:data
-  })
-}
-
-export function deletePerson(id) {
-  return request({
-    url: `/shop-impl-member/deleteUser?userId=${id}`,
-    method: 'delete',
-    // params: {id}
+    data
   })
 }

@@ -47,19 +47,29 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/profile',
+    path: "/devLog",
     component: Layout,
-    redirect: '/profile/index',
-    hidden: true,
     children: [
       {
-        path:'index',
-        component: () => import('@/views/profile/index'),
-        name: 'Profile',
-        meta: { title: '个人中心', icon: 'user', noCache: true }
+        path: '/devLog',
+        component: () => import('@/views/devLog/index'),
+        name: 'DevLog',
+        meta: { title: '开发日志',icon: 'edit' }
       }
     ]
-  }
+  },
+  {
+    path: "/team",
+    component: Layout,
+    children: [
+      {
+        path: '/team',
+        component: () => import('@/views/team/index'),
+        name: 'team',
+        meta: { title: '团队介绍',icon: 'user' }
+      }
+    ]
+  },
 ]
 
 export const asyncRoutes = [
@@ -71,14 +81,35 @@ export const asyncRoutes = [
         path: '/person/messagePerson',
         component: () => import('@/views/person/messagePerson'),
         name: 'AddPerson',
-        meta: { title: '人员管理',icon: 'edit', roles: [3, 4] }
+        meta: { title: '人员管理',icon: 'edit', roles: [1] }
       }
     ]
   },
   {
-    path: '/order/download',
-    component: () => import('@/views/user/order/download'),
-    hidden: true
+    path: "/curricula",
+    component: Layout,
+    children: [
+      {
+        path: '/curricula/curriculaList',
+        component: () => import('@/views/curriculaList/CurriculaList'),
+        name: 'CurriculaList',
+        meta: { title: '课程管理',icon: 'list', roles: [0,1] }
+      }
+    ]
+  },
+  {
+    path: '/profile',
+    component: Layout,
+    redirect: '/profile/index',
+    // hidden: true,
+    children: [
+      {
+        path:'index',
+        component: () => import('@/views/profile/index'),
+        name: 'Profile',
+        meta: { title: '个人中心', icon: 'user', noCache: true, roles: [0,1] }
+      }
+    ]
   },
   { path: '*', redirect: '/404', hidden: true }
 ]

@@ -1,60 +1,92 @@
 <template>
 <div class="app-container">
-  <div v-if="user">
+<!--  <div v-if="user">-->
     <el-row :gutter="20">
       <el-col :span="12" :xs="24">
         <el-card style="margin-bottom:20px;">
           <div slot="header" class="clearfix">
-            <span>{{user.userName}}</span>
+            <span>{{user.username}}</span>
           </div>
           <div class="user-profile">
             <div class="box-center">
               <img src="@/assets/avatar.gif" class="user-avatar">
-<!--              <div>Hello</div>-->
-<!--              {{ user.type }}-->
             </div>
             <div class="box-center">
-              <div class="user-name">工号：{{ user.userId }}</div>
-              <div class="user-role text-muted">姓名：{{ user.userName }}</div>
-              <div class="user-role text-muted">手机号：{{ user.phone }}</div>
-              <div class="user-role text-muted">邮箱：{{ user.email }}</div>
+              <div class="user-name" v-if="role==1">账号：{{ user.userId }}</div>
+              <div class="user-role text-muted" v-show="role==1">姓名：{{ user.username }}</div>
+              <div class="user-role text-muted" v-show="role==1">手机号：{{ user.phone }}</div>
+              <div class="user-role text-muted" v-show="role==1">邮箱：{{ user.email }}</div>
+              <div class="user-role text-muted">
+                修改密码：
+                <el-input v-model="password" placeholder="修改密码" style="width: 300px;" class="filter-item" type="password"/>
+              </div>
+              <div class="user-role text-muted">
+                确认密码：
+                <el-input v-model="password1" placeholder="确认密码" style="width: 300px;" class="filter-item" type="password"/>
+              </div>
+              <div class="user-role text-muted">
+                <el-button class="filter-item" style="margin-left: 5px;" type="primary" size="small" icon="el-icon-edit" @click="handleEdit">
+                  确认修改
+                </el-button>
+              </div>
             </div>
           </div>
         </el-card>
       </el-col>
     </el-row>
-  </div>
+<!--  </div>-->
 </div>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import {updatePassword} from '@/api/user'
   export default {
     name: "profile",
     data() {
       return {
-        user: {}
+        role:JSON.parse(sessionStorage.getItem("role")),
+        user: {},
+        password: '',
+        password1: ''
       }
     },
     computed: {
-      ...mapGetters([
-        'username',
-        'phone',
-        'type',
-        'sex'
-      ])
     },
     created() {
       this.getUser()
     },
     methods: {
       getUser() {
-        console.log(this.username);
         this.user = {
-          username: this.username,
-          phone: this.phone,
-          type: this.type,
-          sex: this.sex
+          userId: JSON.parse(sessionStorage.getItem("userId")),
+          username: JSON.parse(sessionStorage.getItem("username")),
+          phone: JSON.parse(sessionStorage.getItem("phone")),
+          email: JSON.parse(sessionStorage.getItem("email"))
+        }
+      },
+      handleEdit(){
+        if(this.password!==this.password1){
+          this.$message({
+            message: '请确保两次输入的密码一直',
+            type: 'error'
+          })
+        }else{
+          if(this.role===1){
+            updatePassword({userId:JSON.parse(sessionStorage.getItem("userId")),password:this.password}).then(()=>{
+              this.$message({
+                message: '修改密码成功',
+                type: 'success'
+              })
+            })
+          }else{
+            console.log(JSON.parse(sessionStorage.getItem("id")));
+            updatePassword({userId:JSON.parse(sessionStorage.getItem("id")),password:this.password}).then(()=>{
+              this.$message({
+                message: '修改密码成功',
+                type: 'success'
+              })
+            })
+          }
         }
       }
     }
