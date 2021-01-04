@@ -243,7 +243,13 @@
       }
     },
     created() {
-      this.getLectures(null,null,null,null);
+      if(this.role===0){
+        this.getLectures(null,null,null,null);
+      }else{
+        let classTeacher = JSON.parse(sessionStorage.getItem('username'))
+        this.getLectures(null,classTeacher,null,null)
+      }
+
     },
     computed: {},
     methods: {
