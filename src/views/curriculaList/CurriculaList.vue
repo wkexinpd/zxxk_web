@@ -92,8 +92,11 @@
         <el-form-item label="课程名" prop="className">
           <el-input v-model="dialogForm.classname" />
         </el-form-item>
-        <el-form-item label="老师姓名" prop="classTeacher">
+        <el-form-item label="老师姓名" prop="classTeacher" v-show="role===0">
           <el-input v-model="dialogForm.classteacher" />
+        </el-form-item>
+        <el-form-item label="老师姓名" prop="classTeacher" v-show="role===1">
+          <el-input v-model="teacher" disabled/>
         </el-form-item>
         <el-form-item label="可选人数" prop="classPeople">
           <el-input v-model="dialogForm.classpeople" />
@@ -198,6 +201,7 @@
         page: 1,
         limit: 10,
         role:JSON.parse(sessionStorage.getItem('role')),
+        teacher: JSON.parse(sessionStorage.getItem('username')),
         listQuery: {
           className: undefined,
           classTeacher: undefined
@@ -300,7 +304,7 @@
       deleteLecture(classId){
         deleteCurricula(classId=classId).then(()=>{
           this.$message({
-            message: '删除商品成功',
+            message: '删除课程成功',
             type: 'success'
           })
           this.getLectures()
@@ -327,7 +331,7 @@
             // console.log(this.dialogForm);
             addCurricula(this.dialogForm).then(response => {
               this.$message({
-                message: '添加商品成功',
+                message: '添加课程成功',
                 type: 'success'
               })
               this.dialogFormVisible = false
