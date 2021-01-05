@@ -67,7 +67,7 @@
       handleEdit(){
         if(this.password!==this.password1){
           this.$message({
-            message: '请确保两次输入的密码一直',
+            message: '请确保两次输入的密码一致',
             type: 'error'
           })
         }else{

@@ -53,7 +53,7 @@
       <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-popconfirm
-            title="这是一段内容确定删除吗？"
+            title="这是该选课学生确定删除吗？"
             @onConfirm="handleDelete(row)"
             style="padding-left: 5px;"
           >

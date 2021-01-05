@@ -73,13 +73,22 @@
                 >
                   编辑
                 </el-button>
-                <el-button
-                  type="danger"
-                  size="mini"
-                  @click="deleteLecture(lecture.classid)"
+                <el-popconfirm
+                  title="这是一个课程确定删除吗？"
+                  @onConfirm="deleteLecture(lecture.classid)"
+                  style="padding-left: 5px;"
                 >
-                  删除
-                </el-button>
+                  <el-button slot="reference" size="mini" type="danger">
+                    删除
+                  </el-button>
+                </el-popconfirm>
+<!--                <el-button-->
+<!--                  type="danger"-->
+<!--                  size="mini"-->
+<!--                  @click="deleteLecture(lecture.classid)"-->
+<!--                >-->
+<!--                  删除-->
+<!--                </el-button>-->
               </div>
             </div>
           </el-card>
@@ -307,7 +316,12 @@
             message: '删除课程成功',
             type: 'success'
           })
-          this.getLectures()
+          if(this.role===0){
+            this.getLectures(null,null,null,null);
+          }else{
+            let classTeacher = JSON.parse(sessionStorage.getItem('username'))
+            this.getLectures(null,classTeacher,null,null)
+          }
         })
       },
       handlePictureCardPreview(res){
@@ -329,14 +343,28 @@
         this.$refs['dialogForm'].validate((valid) => {
           if (valid) {
             // console.log(this.dialogForm);
-            addCurricula(this.dialogForm).then(response => {
-              this.$message({
-                message: '添加课程成功',
-                type: 'success'
+            if(this.role===0){
+              addCurricula(this.dialogForm).then(response => {
+                this.$message({
+                  message: '添加课程成功',
+                  type: 'success'
+                })
+                this.dialogFormVisible = false
+                this.getLectures()
               })
-              this.dialogFormVisible = false
-              this.getLectures()
-            })
+            }else{
+              let classTeacher = JSON.parse(sessionStorage.getItem('username'))
+              this.dialogForm.classteacher = classTeacher
+              console.log(this.dialogForm);
+              addCurricula(this.dialogForm).then(response => {
+                this.$message({
+                  message: '添加课程成功',
+                  type: 'success'
+                })
+                this.dialogFormVisible = false
+                this.getLectures(null,classTeacher,null,null)
+              })
+            }
           }
         })
       },
@@ -351,7 +379,13 @@
             type: 'success'
           })
           this.dialogFormVisible1 = false
-          this.getLectures()
+          if(this.role===0){
+            this.getLectures(null,null,null,null);
+          }else{
+            let classTeacher = JSON.parse(sessionStorage.getItem('username'))
+            this.getLectures(null,classTeacher,null,null)
+          }
+          // this.getLectures()
         })
       },
       goPerson(classid){
